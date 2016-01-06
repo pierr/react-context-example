@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>React Context, ...</title>
+
+    <meta name="description" content="Une formation sur le JS">
+    <meta name="author" content="Pierre Besson">
+
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:700|Source+Sans+Pro:300,600,300italic,600italic|Source+Code+Pro:400,600' rel='stylesheet' type='text/css'>
+
+
+</head>
+
+<body>
+
+    <style>
+        .redTransparent{
+            background-color: rgba(255, 0, 0, 0.5);
+        }
+        .blackTransparent{
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <section data-background=''>
+                    <h1>React Context</h1>
+                    <h2>How and when can you use it ?</h2>
+                    <p>
+                        <a href='http://pierr.github.io/react-context-example/#/'>http://pierr.github.io/react-context-example</a>
+                    </p>
+                </section>
+            </section>
+            <section>
+                <section>
+                    <h1>React Basics</h1>
+                </section>
+                <section>
+                    <h2>A component can be written in sevral way</h2>
+                    <p>A component has <code>props</code> and can have a <code>state</code></p>
+                </section>
+                <section>
+                    <h2>ES5</h2>
+                    <pre>
+                        <code class='javascript'>
+var MyOldWayComponent = React.createClass({
+  displayName: 'MyOldWayComponent',
+  render: function renderOldWayComponent(){
+    return <div>MyOldWayComponent</div>;
+  }
+});
+                        </code>
+                    </pre>
+                </section>
+                <section>
+                    <h2>ES2015 Class</h2>
+                    <pre>
+                        <code class='javascript'>
+class MyClassComponent extends React.Component {
+  render(){
+    const {state, props} = this;
+    return (
+        <ul>
+            <li>Props :{JSON.stringify(props)}</li>
+            <li>State: {JSON.stringify(state)}</li>
+        </ul>
+    );
+  }
+}
+                        </code>
+                    </pre>
+                </section>
+                <section>
+                    <h2>Pure function</h2>
+                    <pre>
+                        <code class='javascript'>
+function MyFunctionComponent(props) {
+    return <div>Props: {JSON.stringify(props)}</div>
+}
+                        </code>
+                    </pre>
+                </section>
+				<section>
+					<h2>A minimal component tree</h2>
+					<pre>
+						<code class='javascript'>
+class Parent extends React.Component {
+    render(){
+        const {lang} = this.props;
+        return (
+                <div><Child lang={lang}></div>
+            );
+    }
+}
+function Child({lang}){
+    return (<div><GrandChild lang={lang}/></div>);
+}
+function GrandChild({lang}){
+    return (<div>{lang}</div>);
+}
+ReactDOM.render(<Parent lang='fr'/>, document.querySelector('div#app'));
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h2>What to say</h2>
+					<ul>
+						<li>Explicit lang props is really understandable</li>
+						<li>The <code>Child</code> only transfers the <code>lang</code> to the <code>GrandChild</code> without needing it</li>
+						<li>The components are not pure regarding `lang`</li>
+						<li>If the lang feature is updated, you may need to change all your props</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Why don't we use the <code>Context</code> ?</h2>
+				</section>
+				<section>
+					<h2>A minimal component tree</h2>
+					<pre>
+						<code class='javascript'>
+class Parent extends React.Component {
+    getChildContext(){
+        return {this.props.lang};
+    }
+    render(){
+        return (
+                <div><h1>Parent</h1><Child /></div>
+            );
+    }
+}
+Parent.childContextTypes = {
+    lang: React.PropTypes.string
+};
+
+
+function Child({lang}){
+    return (<div><h2>Child</h2><GrandChild /></div>);
+}
+
+function GrandChild(props, {lang}){
+    return (<div><h3>Child</h3>{lang}</div>);
+}
+GrandChild.contextType = {
+    lang: PropTypes.string
+}
+ReactDOM.render(<Parent lang='fr'/>, document.querySelector('div#app'))
+						</code>
+					</pre>
+				</section>
+            </section>
+			<section>
+				<section>
+					<h1>The context in React</h1>
+					<p><a href='https://facebook.github.io/react/docs/context.html'>https://facebook.github.io/react/docs/context.html</a></p>
+				</section>
+				<section>
+
+				</section>
+			</section>
+            <section data-background='https://media.giphy.com/media/PLSoqdhZwB7c4/giphy.gif'></section>
+        </div>
+    </div>
+    <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js">
+        </script>
+
+        <script>
+            // Full list of configuration options available at:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+                transition: 'slide', // none/fade/slide/convex/concave/zoom
+                // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true }
+                ]
+            });
+        </script>
+
+
+</body>
+</html>
