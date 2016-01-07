@@ -325,28 +325,121 @@ ReactDOM.render(<Parent lang='fr'/>, document.querySelector('div#app'))
 			<section>
 				<section>
 					<h2>React Redux bindings</h2>
-					<p><code>Provider</code> and <code>connect</code></p>
+                    <ul>
+                        <li>State is process with redux using <code>reducer</code></li>
+                        <li>The binding between react and redux is done using context</li>
+                        <li>In <code>react-redux</code> there is a simple pattern which is <code>Connect</code> and <code>Provider</code> object</li>
+                    </ul>
 				</section>
 				<section>
 					<h2>Simple redux example</h2>
 					<pre>
 						<code class='javascript'>
-							import { createStore } from 'redux'
-							import { Provider } from 'react-redux'
-							import App from './containers/App'
-							import todoApp from './reducers'
-							let store = createStore(todoApp);
-							let rootElement = document.getElementById('root')
-							render(
-							  <Provider store={store}>
-							    <App />
-							  </Provider>,
-							  rootElement
-							)
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import App from './containers/App'
+import todoApp from './reducers'
+let store = createStore(todoApp);
+let rootElement = document.getElementById('root')
+const ConnectedApp = connect(getState)(App)
+
+render(
+  <Provider store={store}>
+    <ConnectedApp />
+  </Provider>,
+  rootElement
+)
 						</code>
 					</pre>
 				</section>
+                <section>
+                    <h2>Can we apply this pattern to our previous example?</h2>
+                </section>
+                <section>
+                    <h2>We need to introduce a <code>LangProvider</code> and <code>LangConnector</code></h2>
+                </section>
+                <section>
+                    <h2>LangProvider and LangConnector</h2>
+                    <pre>
+                        <code class='javascript'>
+class Parent extends React.Component {
+    render(){
+        return (
+                <div><h1>Parent</h1><Child /></div>
+            );
+    }
+}
+
+function Child({lang}){
+    return (<div><h2>Child</h2><GrandChild /></div>);
+}
+
+function GrandChild({lang}){
+    return (<div><h3>Child</h3>{lang}</div>);
+}
+connectLang(GrandChild);
+
+ReactDOM.render(<LangProvider lang='fr'><Parent/></LangProvider>, document.querySelector('div#app'))
+                        </code>
+                    </pre>
+                </section>
+                <section>
+                    <h2>So what we have now ?</h2>
+                    <ul>
+                        <li>Our components are now pure</li>
+                        <li>Put an object in the context is now explicit with the Provider</li>
+                        <li>Using an object from the context is explicit</li>
+                        <li>Components do not depend from context, they are <code>pure</code></li>
+                        <li>No context type validation rewritten sevral time</li>
+                    </ul>
+                </section>
+                <section>
+                    <h2>How can we create the <code>LangProvider</code>?</h2>
+                </section>
+                <section>
+                    <pre>
+                        <code class='javascript'>
+class LangProvider extends React.Component {
+  getChildContext(){
+    return this.props.lang;
+  }
+  render() {
+    return this.props.children;
+  }
+}
+
+Provider.childContextTypes = {
+  lang: React.PropTypes.string
+};
+                        </code>
+                    </pre>
+                </section>
+                <section>
+                    <h2>How can we create the <code>LangConnector</code>?</h2>
+                </section>
+                <section>
+                    <pre>
+                        <code class='javascript'>
+function connectLang(ComponentToConnect){
+
+    class ConnectedOnLang extends React.Component {
+        render() {
+            const {lang} = this.context;
+            return <ComponentToConnect lang={lang} {...this.props} />;
+        }
+    }
+    ConnectedOnLang.displayName = `${ComponentToConnect.displayName}ConnectedOnLang`
+    ConnectedOnLang.contextTypes = {
+            lang: React.PropTypes.string.isRequired
+    };
+
+    return ConnectedOnLang;
+}
+                        </code>
+                    </pre>
+                </section>
 			</section>
+
 			<section data-background='https://media.giphy.com/media/PLSoqdhZwB7c4/giphy.gif'></section>
         </div>
     </div>
