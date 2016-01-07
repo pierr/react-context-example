@@ -109,6 +109,123 @@ function MyFunctionComponent(props) {
                         </code>
                     </pre>
                 </section>
+			</section>
+			<section>
+				<section>
+					<h1>The context in React</h1>
+					<p><a href='https://facebook.github.io/react/docs/context.html'>https://facebook.github.io/react/docs/context.html</a></p>
+				</section>
+				<section>
+					<h2>Components have <code>props</code>,<code>state</code> and also <code>context</code></h2>
+					<ul>
+						<li>The main purpose of the context is to pass information to a React sub tree.</li>
+						<li>It is <code>Dependency Injection</code></li>
+						<li>Officialy documented in React since last September</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Parent provides the context</h2>
+					<ul>
+						<li>A <code>getChildContext</code> method must be implemented</li>
+						<li>A <code>childContextTypes </code> object must be set</li>
+					</ul>
+				</section>
+				<section>
+					<pre>
+						<code class='javascript'>
+class MyAwesomeRootComponent extends React.Component {
+  render(){
+    return <div><span>Component Awesome</span>
+    <Child1/>
+    {this.props.children}</div>
+  }
+
+
+  getChildContext(){
+    return {color: "purple"};
+  };
+  }
+MyAwesomeRootComponent.childContextTypes = {
+    color: React.PropTypes.string
+  }
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Child, GrandChild use the context</h2>
+					<ul>
+						<li>A <code>context</code> object is in the component's <code>this</code></li>
+						<li>A <code>childContextTypes </code> object must be set</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Child using Context</h2>
+					<pre>
+						<code class='javascript'>
+class ComponentUsingContext extends React.Component {
+	render(){
+		const {color} = this.context;
+		return (
+				<div>{color}</div>
+			);
+	}
+}
+ComponentUsingContext.contextTypes = {
+   color: React.PropTypes.string
+ }
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Child using Context</h2>
+					<pre>
+						<code class='javascript'>
+function MyFuncComponent(props, context){
+		const {color} = this.context;
+		return (
+				<div>{color}</div>
+			);
+	}
+}
+MyFuncComponent.contextTypes = {
+   color: React.PropTypes.string
+ }
+						</code>
+					</pre>
+				</section>
+				<section class='javascript'>
+					<h2>In action</h2>
+					<pre>
+						<code>
+function App(props){
+    return (
+    <MyAwesomeRootComponent>
+      <span>App</span>
+      <Child1 />
+      <Child2 />
+      <Child3 />
+     </MyAwesomeRootComponent>);
+  }
+
+  render(<App/>, document.querySelector("div#root"));
+						</code>
+					</pre>
+				</section>
+				<section>
+					<h2>Super Easy...</h2>
+				</section>
+				<section>
+					<h2>It also raises questions</h2>
+					<ul>
+						<li>Why would I need to to so instead of passing direct props ?</li>
+						<li>Why isn't it more used by React community ?</li>
+						<li>Who use it?</li>
+						<li>Which libs use it? ?</li>
+					</ul>
+				</section>
+			</section>
+			<section>
+				<section><h1>Use case</h1></section>
 				<section>
 					<h2>A minimal component tree</h2>
 					<pre>
@@ -141,6 +258,18 @@ ReactDOM.render(<Parent lang='fr'/>, document.querySelector('div#app'));
 					</ul>
 				</section>
 				<section>
+					<h2>What can we say about the Tree</h2>
+					<ul>
+						<li>pass `props` through a React Component tree is sometimes a pain and inBetween components needs to transfer props without needing them</li>
+						<li>You need reusable components</li>
+						<li>You need behaviour</li>
+						<li><code>props</code> transfer is hard to maintain due to coupling</li>
+					</ul>
+					<p>
+						This problem is even more a pain when you need to abstract things in your components.
+					</p>
+				</section>
+				<section>
 					<h2>Why don't we use the <code>Context</code> ?</h2>
 				</section>
 				<section>
@@ -169,24 +298,56 @@ function Child({lang}){
 function GrandChild(props, {lang}){
     return (<div><h3>Child</h3>{lang}</div>);
 }
-GrandChild.contextType = {
+GrandChild.contextTypes = {
     lang: PropTypes.string
 }
 ReactDOM.render(<Parent lang='fr'/>, document.querySelector('div#app'))
+
 						</code>
 					</pre>
+				</section>
+				<section>
+					<h2>What can we say about that?</h2>
+					<ul>
+						<li>The parent does not have to pass direct props to the child</li>
+						<li>The context is protected with  <code>childContextTypes</code> and <code>contextType</code><:li>
+						<li>code is quite clear</li>
+						<li>There is a not so explicit coupling between</li>
+						<li>The <code>childContextTypes</code> is a pain to write on each time</li>
+						<li>It is not readable</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Can we find a better way to use the context ?</h2>
+					<p>Can we be inspired  by something great?</p>
 				</section>
             </section>
 			<section>
 				<section>
-					<h1>The context in React</h1>
-					<p><a href='https://facebook.github.io/react/docs/context.html'>https://facebook.github.io/react/docs/context.html</a></p>
+					<h2>React Redux bindings</h2>
+					<p><code>Provider</code> and <code>connect</code></p>
 				</section>
 				<section>
-
+					<h2>Simple redux example</h2>
+					<pre>
+						<code class='javascript'>
+							import { createStore } from 'redux'
+							import { Provider } from 'react-redux'
+							import App from './containers/App'
+							import todoApp from './reducers'
+							let store = createStore(todoApp);
+							let rootElement = document.getElementById('root')
+							render(
+							  <Provider store={store}>
+							    <App />
+							  </Provider>,
+							  rootElement
+							)
+						</code>
+					</pre>
 				</section>
 			</section>
-            <section data-background='https://media.giphy.com/media/PLSoqdhZwB7c4/giphy.gif'></section>
+			<section data-background='https://media.giphy.com/media/PLSoqdhZwB7c4/giphy.gif'></section>
         </div>
     </div>
     <script src="lib/js/head.min.js"></script>
