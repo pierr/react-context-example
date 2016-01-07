@@ -71,7 +71,6 @@
                     <ul>
                         <li>Application métier</li>
                         <li>UX</li>
-                        <li>2 ans et demie de gros projets JavaScript</li>
                         <li>15+ Projets avec React</li>
                     </ul>
                 </section>
@@ -152,23 +151,19 @@ function MyFunctionComponent(props) {
 						<code class='javascript'>
 class MyAwesomeRootComponent extends React.Component {
   render(){
-    return (
-        <div>
-            <span>Component Awesome</span>
-            &lt;Child1/&gt;
-            {this.props.children}
-        </div>
-    );
+    return <div><span>Component Awesome</span>
+    <Child1/>
+    {this.props.children}</div>
   }
+
+
   getChildContext(){
     return {color: "purple"};
+  };
   }
-}
-</code>
-<code class='javascript'>
 MyAwesomeRootComponent.childContextTypes = {
     color: React.PropTypes.string
-}
+  }
 						</code>
 					</pre>
 				</section>
@@ -186,11 +181,11 @@ MyAwesomeRootComponent.childContextTypes = {
 class ComponentUsingContext extends React.Component {
 	render(){
 		const {color} = this.context;
-		return <div>{color}</div>;
+		return (
+				<div>{color}</div>
+			);
 	}
 }
-                        </code>
-                        <code class='javascript'>
 ComponentUsingContext.contextTypes = {
    color: React.PropTypes.string
  }
@@ -203,11 +198,11 @@ ComponentUsingContext.contextTypes = {
 						<code class='javascript'>
 function MyFuncComponent(props, context){
 		const {color} = this.context;
-		return <div>{color}</div>;
+		return (
+				<div>{color}</div>
+			);
 	}
 }
-                        </code>
-                        <code class='javascript'>
 MyFuncComponent.contextTypes = {
    color: React.PropTypes.string
  }
@@ -220,16 +215,15 @@ MyFuncComponent.contextTypes = {
 						<code>
 function App(props){
     return (
-        &lt;MyAwesomeRootComponent&gt;
-          <span>App</span>
-          &lt;Child1 /&gt;
-          &lt;Child2 /&gt;
-          &lt;Child3 /&gt;
-         &lt;/MyAwesomeRootComponent&gt;
-     );
+    <MyAwesomeRootComponent>
+      <span>App</span>
+      <Child1 />
+      <Child2 />
+      <Child3 />
+     </MyAwesomeRootComponent>);
   }
 
-  render(&lt;App/&gt;, document.querySelector("div#root"));
+  render(<App/>, document.querySelector("div#root"));
 						</code>
 					</pre>
 				</section>
@@ -256,31 +250,19 @@ class Parent extends React.Component {
     render(){
         const {lang} = this.props;
         return (
-                <div>&lt;Child lang={lang}&gt;</div>
+                <div><Child lang={lang}></div>
             );
     }
 }
-                    </code>
-                    <code class='javascript'>
 function Child({lang}){
-    return (<div>&lt;GrandChild lang={lang}&gt;</div>);
+    return (<div><GrandChild lang={lang}/></div>);
 }
-                    </code>
-                    <code class='javascript'>
 function GrandChild({lang}){
     return (<div>{lang}</div>);
 }
-                    </code>
-                </pre>
-                </section>
-                <section>
-                    <h2>Render in the DOM</h2>
-                    <pre>
-                    <code class='javascript'>
-ReactDOM.render(&lt;Parent lang='fr'/&gt;, document.querySelector('div#app'));
+ReactDOM.render(<Parent lang='fr'/>, document.querySelector('div#app'));
 						</code>
 					</pre>
-                    <a href='https://jsbin.com/bikexe/5/edit?html,js,output'> JSBIN </a>
 				</section>
 				<section>
 					<h2>What to say</h2>
@@ -316,36 +298,26 @@ class Parent extends React.Component {
     }
     render(){
         return (
-                <div><h1>Parent</h1>&lt;Child&gt;</div>
+                <div><h1>Parent</h1><Child /></div>
             );
     }
 }
 Parent.childContextTypes = {
     lang: React.PropTypes.string
 };
-</code>
-</pre>
-</section>
-<section>
-    <pre>
-<code class='javascript'>
 
-function Child(props){
-    return (<div><h2>Child</h2>&lt;GrandChild&gt;</div>);
+
+function Child({lang}){
+    return (<div><h2>Child</h2><GrandChild /></div>);
 }
-</code>
-<code class='javascript'>
+
 function GrandChild(props, {lang}){
     return (<div><h3>Child</h3>{lang}</div>);
 }
-</code>
-<code class='javascript'>
 GrandChild.contextTypes = {
     lang: PropTypes.string
 }
-</code>
-<code class='javascript'>
-ReactDOM.render(&lt;Parent lang='fr'/&gt;, document.querySelector('div#app'))
+ReactDOM.render(<Parent lang='fr'/>, document.querySelector('div#app'))
 
 						</code>
 					</pre>
@@ -388,9 +360,9 @@ let rootElement = document.getElementById('root')
 const ConnectedApp = connect(getState)(App)
 
 render(
-  &lt;Provider store={store}&gt;
-    &lt;ConnectedApp /&gt;
-  &lt;/Provider&gt;,
+  <Provider store={store}>
+    <ConnectedApp />
+  </Provider>,
   rootElement
 )
 						</code>
@@ -400,8 +372,7 @@ render(
                     <h2>Can we apply this pattern to our previous example?</h2>
                 </section>
                 <section>
-                    <h2>We need to introduce</h2>
-                    <p>a <code>LangProvider</code> and <code>LangConnector</code></p>
+                    <h2>We need to introduce a <code>LangProvider</code> and <code>LangConnector</code></h2>
                 </section>
                 <section>
                     <h2>LangProvider and LangConnector</h2>
@@ -410,29 +381,21 @@ render(
 class Parent extends React.Component {
     render(){
         return (
-                <div><h1>Parent</h1>&lt;Child/&gt;</div>
+                <div><h1>Parent</h1><Child /></div>
             );
     }
 }
-                </code>
-            </pre>
-        </section>
-        <section>
-            <pre>
-                <code class='javascript'>
+
 function Child({lang}){
-    return (<div><h2>Child</h2>&lt;GrandChild /&gt;</div>);
+    return (<div><h2>Child</h2><GrandChild /></div>);
 }
-                </code>
-                <code class='javascript'>
+
 function GrandChild({lang}){
-    return (<div><h3>GrandChild</h3>{lang}</div>);
+    return (<div><h3>Child</h3>{lang}</div>);
 }
-            </code>
-            <code class='javascript'>
 connectLang(GrandChild);
 
-ReactDOM.render(&lt;LangProvider lang='fr'&gt;&lt;Parent/&gt;&lt;/LangProvider&gt;, document.querySelector('div#app'))
+ReactDOM.render(<LangProvider lang='fr'><Parent/></LangProvider>, document.querySelector('div#app'))
                         </code>
                     </pre>
                 </section>
@@ -454,14 +417,13 @@ ReactDOM.render(&lt;LangProvider lang='fr'&gt;&lt;Parent/&gt;&lt;/LangProvider&g
                         <code class='javascript'>
 class LangProvider extends React.Component {
   getChildContext(){
-    return {lang: this.props.lang};
+    return this.props.lang;
   }
   render() {
     return this.props.children;
   }
 }
-                        </code>
-                        <code class='javascript'>
+
 Provider.childContextTypes = {
   lang: React.PropTypes.string
 };
@@ -472,7 +434,6 @@ Provider.childContextTypes = {
                     <h2>How can we create the <code>LangConnector</code>?</h2>
                 </section>
                 <section>
-                    <h2>We will do a Higher Order Component in a decorator</h2>
                     <pre>
                         <code class='javascript'>
 function connectLang(ComponentToConnect){
@@ -480,12 +441,10 @@ function connectLang(ComponentToConnect){
     class ConnectedOnLang extends React.Component {
         render() {
             const {lang} = this.context;
-            return &lt;ComponentToConnect lang={lang} {...this.props} /&gt; ;
+            return <ComponentToConnect lang={lang} {...this.props} />;
         }
     }
-
-    ConnectedOnLang.displayName = `${ComponentToConnect.displayName}ConnectedOnLang`;
-
+    ConnectedOnLang.displayName = `${ComponentToConnect.displayName}ConnectedOnLang`
     ConnectedOnLang.contextTypes = {
             lang: React.PropTypes.string.isRequired
     };
@@ -505,68 +464,44 @@ function connectLang(ComponentToConnect){
 			</section>
             <section>
                 <h2>API and lifecycle</h2>
-                <ul>
-                    <li><code class='javascript'>void componentWillReceiveProps(object nextProps, object nextContext)</code></li>
-                    <li><code>boolean shouldComponentUpdate(object nextProps, object nextState, object nextContext)</code></li>
-                    <li><code>void componentWillUpdate(object nextProps, object nextState, object nextContext)</code></li>
-                    <li><code>void componentDidUpdate(object prevProps, object prevState, object prevContext)</code></li>
-                </ul>
+            </section>
+            <section>
+                <section>
+                    <h1>Tests</h1>
+                </section>
             </section>
             <section>
                 <section>
                     <h1>Real life use case</h1>
                 </section>
                 <section><h2>Application's state with REDUX</h2></section>
-                <section><h2>Route with React router</h2><p><code>RouteComponent</code>, <code>RouteComponent</code></p></section>
+                <section><h2>Route with React router</h2></section>
                 <section>
                     <h2>Metadata on Fields</h2>
                     <pre>
-                        <code class='json'>
-{
-    movie: {
-        code: {
-            domain: 'DO_ID',
-            required: true
-        },
-        title: {
-            domain: 'DO_LABEL_LONG',
-            required: true
-        },
-        originalTitle: {
-            domain: 'DO_LABEL_LONG',
-            required: false
-        }
-    }
-}
+                        <code class='javascript'>
+
                         </code>
                     </pre>
                 </section>
-                <section>
-                    <h2>Master data</h2>
-                    </pre>
-                </section>
-                <section>
-                    <h2>Complex mixins</h2>
-                    <p>When you cannot convert your mixin in an Higher Order Component</p>
-                </section>
+                <section><h2>Master data</h2></section>
             </section>
             <section>
                 <section>
                     <h1>Conclusion</h1>
                 </section>
                 <section>
-                    <h2>React doc warns us that is is not a stable API</h2>
+                    <h2>Facebook warns us that is is not a stable API</h2>
                 </section>
                 <section>
                     <h2>Prefer direct <code>props</code> when you can</h2>
                 </section>
                 <section>
-                    <h2>When should you use the context ?</h2>
+                    <h2>When should you use the context</h2>
                     <p>
                         When you want to abstract something <br />
-                        For things such as current user, language, theme, metadata. <br />
-                        Every where you would have use a global variable or a separate module.<br />
-                        When you wan to abstract a behaviour (often use to be complex mixins).
+                        For things such as current user, language, theme, metadata.
+                        Every where you would have use a global variable or a separate module
                     </p>
                 </section>
             </section>

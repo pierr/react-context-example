@@ -1,0 +1,23 @@
+{
+  "name": "formation-focus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build":"cp -r node_modules/reveal.js/css ./ && cp -r node_modules/reveal.js/js ./ && cp -r node_modules/reveal.js/lib ./ && cp -r node_modules/reveal.js/plugin ./",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/get-focus/formation-focus.git"
+  },
+  "author": "focus@kleegroup.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/get-focus/formation-focus/issues"
+  },
+  "homepage": "https://github.com/get-focus/formation-focus#readme",
+  "dependencies": {
+    "reveal.js": "^3.1.0"
+  }
+}
